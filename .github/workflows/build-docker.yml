@@ -13,18 +13,22 @@ jobs:
       - name: Checkout du code
         uses: actions/checkout@v4
 
-      # 2. Configure Docker pour le registry HTTP
-     
+      # 2. Configure Docker pour le registry HTTP (POUR L'ACTION 'LOGIN')
       - name: Configure Docker for insecure registry
         run: |
           echo '{"insecure-registries":["${{ secrets.NEXUS_REGISTRY_URL }}"]}' | sudo tee /etc/docker/daemon.json
           sudo service docker restart
 
-      # 3. Configure le builder Docker (Buildx)
-      
+      # 3. Configure le builder Docker (Buildx) (POUR L'ACTION 'BUILD-PUSH')
+    
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v3
+        with:
+          # C'est la syntaxe TOML pour dire à Buildx d'utiliser HTTP
+          buildkitd-config-inline: |
+            [registry."${{ secrets.NEXUS_REGISTRY_URL }}"]
+              insecure = true
 
       # 4. Connexion au registry Nexus
       - name: Login sur le Registry Nexus
