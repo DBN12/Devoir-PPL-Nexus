@@ -13,7 +13,7 @@ jobs:
       - name: Checkout du code
         uses: actions/checkout@v4
 
-      # 2. NOUVELLE ÉTAPE : Configure Docker pour le registry HTTP
+      # 2. Configure Docker pour le registry HTTP
      
       - name: Configure Docker for insecure registry
         run: |
