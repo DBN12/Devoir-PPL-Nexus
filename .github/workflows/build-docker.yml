@@ -20,12 +20,11 @@ jobs:
           sudo service docker restart
 
       # 3. Configure le builder Docker (Buildx) (POUR L'ACTION 'BUILD-PUSH')
-    
+      # On lui donne un ID "buildx"
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v3
         with:
-          # C'est la syntaxe TOML pour dire à Buildx d'utiliser HTTP
           buildkitd-config-inline: |
             [registry."${{ secrets.NEXUS_REGISTRY_URL }}"]
               insecure = true
@@ -45,3 +44,8 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.NEXUS_REGISTRY_URL }}/mon-app:latest
+          # 
+          # VOCI LA CORRECTION : 
+          # On dit à cette action d'utiliser le builder créé à l'étape "buildx"
+          #
+          builder: ${{ steps.buildx.name }}
